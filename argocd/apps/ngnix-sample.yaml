@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ngnix-sample 
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: farget
+    server: https://kubernetes.default.svc
+  project: sandbox-project
+  source:
+    path: argocd/deployments/ngnix-sample
+    repoURL: https://github.com/mandarnilange/terraform_kubernetes_cloud_native.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas

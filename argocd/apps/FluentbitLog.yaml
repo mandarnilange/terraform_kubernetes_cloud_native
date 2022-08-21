@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: fluent-bit
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    namespace: fluentbit-logging
+    server: https://kubernetes.default.svc
+  project: sandbox-project
+  source:
+    path: deployments/fluentbit-cloudwatch-direct
+    repoURL: git@bitbucket.org:community_developers/infra-sandbox.git
+    targetRevision: HEAD
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+  ignoreDifferences:
+  - group: apps
+    kind: Deployment
+    jsonPointers:
+    - /spec/replicas
